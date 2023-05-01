@@ -22,7 +22,7 @@ const init = () =>{
     inquirer.prompt([
       {
       type: "list",
-      name: "Main Menu",
+      name: "MainMenu",
       message: 'What would you like to do?',
       choices: [
       "View All Employees",
@@ -35,18 +35,18 @@ const init = () =>{
       "Quit"]
     }
   ]).then(selection =>{
-    switch (selection.int) {
-    case "View All Employees":
+    switch (selection.MainMenu) {
+    case "View All Employees": showEmployees();
         break;
     case "Add Employee":
       break;
     case "Update employee role":
       break;
-    case "View all roles":
+    case "View all roles": showRoles();
       break;
     case "Add role":
       break;
-    case "View all departments":
+    case "View all departments": showDepartments();
       break;
     case "Add department":
       break;
