@@ -57,6 +57,37 @@ const init = () =>{
   })
 };
 
+showDepartments = () =>{
+  const sql = `SELECT departments.id AS id, departments.name AS departments FROM departments`;
+
+  db.query(sql, (err, rows) => {
+    if(err) throw err;
+    console.table(rows);
+    init()
+  })
+}
+
+showRoles = () =>{
+  const sql = `SQL code here`
+
+  db.query(sql, (err, rows) =>{
+    if(err) throw err;
+    console.table(rows);
+    init()
+  })
+}
+
+showEmployees = () =>{
+  const sql = `SQL code here`
+
+  db.query(sql, (err, rows) =>{
+    if(err) throw err;
+    console.table(rows);
+    init()
+  })
+}
+
+
 app.use((req, res) => {
   res.status(404).end();
 });
