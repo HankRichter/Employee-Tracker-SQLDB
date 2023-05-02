@@ -1,13 +1,7 @@
-const express = require("express");
 const inquirer = require("inquirer");
 const mysql = require("mysql2");
 
-// const PORT = process.env.PORT || 3001;
-// const app = express();
-
-// app.use(express.urlencoded({ extended: false }));
-// app.use(express.json());
-
+// Creates the connection to the SQL db.
 const db = mysql.createConnection(
   {
     host: "localhost",
@@ -18,6 +12,7 @@ const db = mysql.createConnection(
   console.log(`Connected the the job database.`)
 );
 
+// init function to start the app on a `node server.js`.
 const init = () => {
   inquirer
     .prompt([
@@ -37,6 +32,7 @@ const init = () => {
         ],
       },
     ])
+    // switch case for the user to select what action they would like to perform.
     .then((selection) => {
       switch (selection.MainMenu) {
         case "View all departments":
@@ -57,7 +53,7 @@ const init = () => {
         case "Add employee":
           createEmployee();
           break;
-        case "Update employee role":
+        case "Update employee role": updateEmployee();
           break;
         case "Quit":
         default:
@@ -67,6 +63,7 @@ const init = () => {
     });
 };
 
+// shows all the departments in the job_db.
 showDepartments = () => {
   const sql = `SELECT departments.id AS id, department_name AS departments FROM departments`;
 
@@ -77,6 +74,7 @@ showDepartments = () => {
   });
 };
 
+// shows all the roles, with the department they are in, in the job_db. 
 showRoles = () => {
   const sql = `SELECT roles.title, roles.salary, departments.department_name AS department
   FROM roles
@@ -89,6 +87,7 @@ showRoles = () => {
   });
 };
 
+// shows all the employees with the role, department, salary and manager. 
 showEmployees = () => {
   const sql = `SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, departments.department_name AS department, CONCAT(managers.first_name, ' ', managers.last_name) AS manager
   FROM employees
@@ -104,6 +103,7 @@ showEmployees = () => {
   });
 };
 
+// allows you to create a department and add it to the job_db.
 createDepartment = () => {
   inquirer
     .prompt([
@@ -123,6 +123,7 @@ createDepartment = () => {
     });
 };
 
+// allows you to create a role and add it to the job_db.
 createRole = () => {
   let departmentChoices = [];
   let departmentsData;
@@ -171,6 +172,7 @@ createRole = () => {
     });
 };
 
+// allows you to create an employee and add them to the job_db.
 createEmployee = () => {
   let rolesChoices = [];
   let departmentsData;
@@ -219,12 +221,10 @@ createEmployee = () => {
     });
 };
 
+// allows you to update an employee thats alread in the job_db.
+updateEmployee = () =>{
+
+}
+
 init();
 
-// app.use((req, res) => {
-//   res.status(404).end();
-// });
-
-// app.listen(PORT, () => {
-//   console.log(`Server running on port ${PORT}`);
-// });
