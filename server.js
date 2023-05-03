@@ -175,46 +175,65 @@ createRole = () => {
 // allows you to create an employee and add them to the job_db.
 createEmployee = () => {
   let rolesChoices = [];
-  let departmentsData;
-  db.query(`SELECT * FROM departments;`, (err, rows) => {
+  let rolesData;
+  db.query(`SELECT * FROM roles;`, (err, rows) => {
     if (err) throw err;
-    departmentsData = rows;
+    rolesData = rows;
     rows.map((row) => {
-      departmentChoices.push(row.department_name);
+      rolesChoices.push(row.title);
+    });
+  });
+  let employeesChoices = [];
+  let employeesData;
+  db.query(`SELECT * FROM employees;`, (err, rows) => {
+    if (err) throw err;
+    employeesData = rows;
+    rows.map((row) => {
+      employeesChoices.push(`${row.first_name} ${row.last_name}`);
     });
   });
   inquirer
     .prompt([
       {
         type: "input",
-        name: "title",
-        message: "What is the name of the role?",
+        name: "firstName",
+        message: "What is the employee's first name?",
       },
       {
         type: "input",
-        name: "salary",
-        message: "What is the salary of the role?",
+        name: "lastName",
+        message: "What is the employee's last name?",
       },
       {
         type: "list",
-        name: "department",
-        message: "Which department does the role belong to?",
-        choices: departmentChoices,
+        name: "role",
+        message: "What is the employee's role?",
+        choices: rolesChoices,
+      },
+      {
+        type: "list",
+        name: "manager",
+        message: "Who is the employee's manager?",
+        choices: employeesChoices,
       },
     ])
     .then((userInput) => {
-      const sql = `INSERT INTO roles (title, salary, departments_id) VALUES (?,?,?)`;
-      const departmentId = departmentsData.filter(
-        (x) =>
-          x.department_name.toLowerCase() === userInput.department.toLowerCase()
-      )[0];
       console.log(userInput);
+      const sql = `INSERT INTO employees (first_name, last_name, roles_id, manager_id) VALUES (?,?,?,?)`;
+      const rolesTitle = rolesData.filter((x) => x.title === userInput.role)[0];
+      const manager = employeesData.filter(
+        (x) => `${x.first_name} ${x.last_name}` === userInput.manager
+      )[0];
+      console.log(manager);
+      console.log(rolesTitle);
       db.query(
         sql,
-        [userInput.title, userInput.salary, departmentId.id],
-        (err, rows) => {
+        [userInput.firstName, userInput.lastName, rolesTitle.id, manager.id],
+        (err) => {
           if (err) throw err;
-          console.log(`Added ${userInput.title} to the database.`);
+          console.log(
+            `Added ${userInput.firstName}${userInput.lastName} to the database.`
+          );
           init();
         }
       );
@@ -227,4 +246,3 @@ updateEmployee = () =>{
 }
 
 init();
-
