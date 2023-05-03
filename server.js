@@ -240,9 +240,76 @@ createEmployee = () => {
     });
 };
 
-// allows you to update an employee thats alread in the job_db.
-updateEmployee = () =>{
-
-}
+// allows you to update an employee thats already in the job_db.
+updateEmployee = () => {
+  let employeesChoices = [];
+  let employeesData;
+  let employeeInput;
+  let rolesInput;
+  db.promise()
+    .query(`SELECT * FROM employees;`)
+    .then(([rows]) => {
+      employeesData = rows;
+      rows.map((row) => {
+        employeesChoices.push(`${row.first_name} ${row.last_name}`);
+      });
+      inquirer
+        .prompt([
+          {
+            type: "list",
+            name: "employee",
+            message: "Which employee would you like to update?",
+            choices: employeesChoices,
+          },
+        ])
+        .then((userInput) => {
+          employeeInput = userInput;
+          let rolesChoices = [];
+          let rolesData;
+          db.promise()
+            .query(`SELECT * FROM roles;`)
+            .then(([rows]) => {
+              rolesData = rows;
+              rows.map((row) => {
+                rolesChoices.push(row.title);
+              });
+              inquirer
+                .prompt([
+                  {
+                    type: "list",
+                    name: "role",
+                    message: "What is the employee's new role?",
+                    choices: rolesChoices,
+                  },
+                ])
+                .then((userInput) => {
+                  const sql = `UPDATE employees SET roles_id = ? WHERE id = ?`;
+                  console.log(employeesChoices);
+                  console.log(employeeInput);
+                  const employee = employeesData.filter(
+                    (x) =>
+                      `${x.first_name} ${x.last_name}` ===
+                      employeeInput.employee
+                  )[0];
+                  const role = rolesData.filter(
+                    (x) =>
+                      x.title.toLowerCase() === userInput.role.toLowerCase()
+                  )[0];
+                  console.log(role);
+                  db.query(sql, [role.id, employee.id], (err) => {
+                    if (err) throw err;
+                    console.log(
+                      `Updated ${employeeInput.employee}'s role to ${userInput.role}.`
+                    );
+                    init();
+                  });
+                });
+            });
+        });
+    })
+    .catch((err) => {
+      throw err;
+    });
+};
 
 init();
