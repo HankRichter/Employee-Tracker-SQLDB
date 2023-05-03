@@ -242,7 +242,6 @@ updateEmployee = () => {
   let employeesChoices = [];
   let employeesData;
   let employeeInput;
-  let rolesInput;
   db.promise()
     .query(`SELECT * FROM employees;`)
     .then(([rows]) => {
