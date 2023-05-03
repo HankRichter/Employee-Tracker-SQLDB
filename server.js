@@ -218,14 +218,11 @@ createEmployee = () => {
       },
     ])
     .then((userInput) => {
-      console.log(userInput);
       const sql = `INSERT INTO employees (first_name, last_name, roles_id, manager_id) VALUES (?,?,?,?)`;
       const rolesTitle = rolesData.filter((x) => x.title === userInput.role)[0];
       const manager = employeesData.filter(
         (x) => `${x.first_name} ${x.last_name}` === userInput.manager
       )[0];
-      console.log(manager);
-      console.log(rolesTitle);
       db.query(
         sql,
         [userInput.firstName, userInput.lastName, rolesTitle.id, manager.id],
@@ -284,8 +281,6 @@ updateEmployee = () => {
                 ])
                 .then((userInput) => {
                   const sql = `UPDATE employees SET roles_id = ? WHERE id = ?`;
-                  console.log(employeesChoices);
-                  console.log(employeeInput);
                   const employee = employeesData.filter(
                     (x) =>
                       `${x.first_name} ${x.last_name}` ===
@@ -295,7 +290,6 @@ updateEmployee = () => {
                     (x) =>
                       x.title.toLowerCase() === userInput.role.toLowerCase()
                   )[0];
-                  console.log(role);
                   db.query(sql, [role.id, employee.id], (err) => {
                     if (err) throw err;
                     console.log(
