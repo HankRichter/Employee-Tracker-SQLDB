@@ -53,7 +53,8 @@ const init = () => {
         case "Add employee":
           createEmployee();
           break;
-        case "Update employee role": updateEmployee();
+        case "Update employee role":
+          updateEmployee();
           break;
         case "Quit":
         default:
@@ -69,12 +70,12 @@ showDepartments = () => {
 
   db.query(sql, (err, rows) => {
     if (err) throw err;
-    console.log(rows);
+    console.table(rows);
     init();
   });
 };
 
-// shows all the roles, with the department they are in, in the job_db. 
+// shows all the roles, with the department they are in, in the job_db.
 showRoles = () => {
   const sql = `SELECT roles.title, roles.salary, departments.department_name AS department
   FROM roles
@@ -87,7 +88,7 @@ showRoles = () => {
   });
 };
 
-// shows all the employees with the role, department, salary and manager. 
+// shows all the employees with the role, department, salary and manager.
 showEmployees = () => {
   const sql = `SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, departments.department_name AS department, CONCAT(managers.first_name, ' ', managers.last_name) AS manager
   FROM employees
@@ -159,7 +160,6 @@ createRole = () => {
         (x) =>
           x.department_name.toLowerCase() === userInput.department.toLowerCase()
       )[0];
-      console.log(userInput);
       db.query(
         sql,
         [userInput.title, userInput.salary, departmentId.id],
